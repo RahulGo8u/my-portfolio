@@ -1,4 +1,15 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Mail, MapPin, ArrowDown } from "lucide-react";
+import { PROFILE, STATS } from "../data";
+
+const ROLES = [
+  "Full Stack .NET Developer",
+  "AI Agent Developer",
+  "Cloud Architect",
+  "AWS Bedrock Specialist",
+  ".NET Core Expert",
+];
 
 function GithubIcon({ size = 16 }: { size?: number }) {
   return (
@@ -15,7 +26,37 @@ function LinkedinIcon({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
-import { PROFILE, STATS } from "../data";
+
+function TypingText() {
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const target = ROLES[roleIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!deleting && displayed.length < target.length) {
+      timeout = setTimeout(() => setDisplayed(target.slice(0, displayed.length + 1)), 60);
+    } else if (!deleting && displayed.length === target.length) {
+      timeout = setTimeout(() => setDeleting(true), 1800);
+    } else if (deleting && displayed.length > 0) {
+      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35);
+    } else if (deleting && displayed.length === 0) {
+      setDeleting(false);
+      setRoleIdx((i) => (i + 1) % ROLES.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, deleting, roleIdx]);
+
+  return (
+    <span className="text-indigo-400 font-medium">
+      {displayed}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+}
 
 export default function Hero() {
   return (
@@ -25,7 +66,10 @@ export default function Hero() {
 
       <div className="relative max-w-6xl mx-auto px-6 py-32 pt-40">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-8">
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-8"
+          style={{ opacity: 1, animation: "fadeInUp 0.5s ease both" }}
+        >
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
           Available for Senior / Lead Roles
         </div>
@@ -37,10 +81,14 @@ export default function Hero() {
         </h1>
 
         {/* Title */}
-        <p className="text-xl md:text-2xl text-[#a0a0b8] font-medium mb-4">
+        <p className="text-xl md:text-2xl text-[#a0a0b8] font-medium mb-3">
           {PROFILE.title}
         </p>
-        <p className="text-base text-[#606078] mb-6">{PROFILE.subtitle}</p>
+
+        {/* Typing subtitle */}
+        <p className="text-base text-[#606078] mb-6 h-6">
+          <TypingText />
+        </p>
 
         {/* Tagline */}
         <p className="text-base md:text-lg text-[#a0a0b8] max-w-xl leading-relaxed mb-10">
@@ -56,7 +104,7 @@ export default function Hero() {
             View My Work
           </a>
           <a
-            href="mailto:rrsimt.rahul@gmail.com"
+            href="#contact"
             className="px-6 py-3 rounded-lg border border-[#1e1e2e] hover:border-indigo-500/50 text-[#a0a0b8] hover:text-white font-medium transition-colors text-sm"
           >
             Get In Touch
@@ -64,7 +112,7 @@ export default function Hero() {
         </div>
 
         {/* Social links */}
-        <div className="flex items-center gap-5 mb-16">
+        <div className="flex items-center gap-5 mb-16 flex-wrap">
           <a
             href={PROFILE.linkedin}
             target="_blank"

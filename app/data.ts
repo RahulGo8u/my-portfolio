@@ -136,6 +136,8 @@ export const PROJECTS = [
     impact: "Reduced manual processing by 70%, enabling fully automated end-to-end document pipelines.",
     stack: ["AWS Bedrock", "C#", ".NET Core", "Lambda", "S3", "DynamoDB", "Generative AI"],
     accent: true,
+    github: "",
+    demo: "",
   },
   {
     name: "Lead to Cash Platform",
@@ -144,6 +146,8 @@ export const PROJECTS = [
     impact: "Unified 6+ business systems into a single platform, reducing processing time significantly.",
     stack: ["C#", ".NET Core", "Angular", "SQL Server", "Oracle", "Azure", "DevOps"],
     accent: false,
+    github: "",
+    demo: "",
   },
   {
     name: "ADCB Banking Web Applications",
@@ -152,6 +156,8 @@ export const PROJECTS = [
     impact: "Delivered applications used by 7,600+ bank employees across 42 countries.",
     stack: ["C#", ".NET Core", "Angular", "SQL Server", "Azure", "Entity Framework"],
     accent: false,
+    github: "",
+    demo: "",
   },
   {
     name: "Meter Data Management System",
@@ -160,6 +166,8 @@ export const PROJECTS = [
     impact: "Deployed to utility companies across 37 countries managing millions of smart meter data points.",
     stack: ["C#", "ASP.NET", "WCF", "SQL Server", "Oracle", "WinForms", "WPF"],
     accent: false,
+    github: "",
+    demo: "",
   },
 ];
 

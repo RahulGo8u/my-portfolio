@@ -1,23 +1,46 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { PROFILE } from "../data";
 
 const NAV_LINKS = [
   { href: "#about", label: "About" },
   { href: "#skills", label: "Skills" },
   { href: "#experience", label: "Experience" },
   { href: "#projects", label: "Projects" },
+  { href: "#certifications", label: "Certifications" },
   { href: "#contact", label: "Contact" },
 ];
+
+const SECTION_IDS = NAV_LINKS.map((l) => l.href.slice(1));
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("");
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Track active section via IntersectionObserver
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActive(id);
+        },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   return (
@@ -29,23 +52,33 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#" className="text-white font-semibold tracking-tight">
-          Rahul<span className="text-indigo-400">.</span>
+        <a href="#" className="font-semibold tracking-tight text-white hover:text-indigo-300 transition-colors">
+          {PROFILE.name}
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm text-[#a0a0b8] hover:text-white transition-colors"
-            >
-              {l.label}
-            </a>
-          ))}
+        <nav className="hidden md:flex items-center gap-6">
+          {NAV_LINKS.map((l) => {
+            const isActive = active === l.href.slice(1);
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                className={`text-sm transition-colors relative py-1 ${
+                  isActive
+                    ? "text-white"
+                    : "text-[#a0a0b8] hover:text-white"
+                }`}
+              >
+                {l.label}
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-px bg-indigo-500 rounded-full" />
+                )}
+              </a>
+            );
+          })}
           <a
-            href="mailto:rrsimt.rahul@gmail.com"
+            href={`mailto:${PROFILE.email}`}
             className="text-sm px-4 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
           >
             Hire Me
@@ -69,13 +102,15 @@ export default function Navbar() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="text-sm text-[#a0a0b8] hover:text-white transition-colors"
+              className={`text-sm transition-colors ${
+                active === l.href.slice(1) ? "text-indigo-400" : "text-[#a0a0b8] hover:text-white"
+              }`}
             >
               {l.label}
             </a>
           ))}
           <a
-            href="mailto:rrsimt.rahul@gmail.com"
+            href={`mailto:${PROFILE.email}`}
             className="text-sm px-4 py-2 rounded-md bg-indigo-600 text-white text-center"
           >
             Hire Me
